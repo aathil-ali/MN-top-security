@@ -25,7 +25,12 @@ export default function NotFound() {
   )
 }
 
-function CompassIcon(props) {
+interface ChevronDownIconProps extends React.SVGProps<SVGSVGElement> {
+  // Define any specific props your component expects, if any
+}
+
+
+function CompassIcon(props: ChevronDownIconProps) {
   return (
     <svg
       {...props}

@@ -71,10 +71,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const session = event.data.object as Stripe.Checkout.Session;
 
     const userId = session.metadata?.userId;
-    const courseId = parseInt( session.metadata?.courseId);
+    const courseId = parseInt(session.metadata?.courseId ?? "0") || 0;
     const productTitle = session.metadata?.productTitle;
-    const  productImageUrl = session.metadata?.productImageUrl;
-    const amount = parseFloat(session?.amount_total ) / 100 ;
+    const productImageUrl = session.metadata?.productImageUrl;
+    const amount = session?.amount_total !== null ? parseFloat(session.amount_total.toString()) / 100 : 0;
 
      const purchaseDate = new Date( session.created * 1000).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
     
@@ -108,8 +108,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
       const adminEmailHtml = render(
         AdminNotificationEmail({
-          userName: session.customer_details.name,
-          userEmail: session.customer_details.email,
+          userName: session?.customer_details?.name ?? 'Unknown User',
+          userEmail: session?.customer_details?.email ?? 'example@example.com',
           productTitle,
           productImageUrl,
           purchaseDate,

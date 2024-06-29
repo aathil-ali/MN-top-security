@@ -13,7 +13,7 @@ type AdminNotificationEmailProps = {
   productTitle?: string;
   productImageUrl?: string;
   purchaseDate?: string;
-  price?: string;
+  price?: number;
 };
 
 export default function AdminNotificationEmail({
@@ -26,7 +26,7 @@ export default function AdminNotificationEmail({
 }: AdminNotificationEmailProps) {
   const host = "neorepo.com";
   const escapedHost = host.replace(/\./g, "&#8203;.");
-  const formattedPrice = `$${price.toFixed(2)}`;
+  const formattedPrice = price ? `$${price.toFixed(2)}` : '';
 
   return (
     <Html>

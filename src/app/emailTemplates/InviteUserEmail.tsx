@@ -19,7 +19,7 @@ type PaymentSuccessEmailProps = {
 export default function PaymentSuccessEmail({ price, productTitle, productImageUrl, purchaseDate }: PaymentSuccessEmailProps) {
   const host = "neorepo.com";
   const escapedHost = host.replace(/\./g, "&#8203;.");
-  const formattedPrice = `$${price.toFixed(2)}`;
+  const formattedPrice = price ? `$${price.toFixed(2)}` : '';
 
   return (
     <Html>

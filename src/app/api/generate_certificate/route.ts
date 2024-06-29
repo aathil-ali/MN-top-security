@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
     } catch (error) {
         console.error("Error generating certificate:", error);
         return NextResponse.json(
-            { message: "Internal Server Error", error: error.message },
+            { message: "Internal Server Error", error: error },
             { status: 500 }
         );
     }

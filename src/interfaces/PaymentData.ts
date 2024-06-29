@@ -3,4 +3,6 @@ export interface PaymentData {
   stripeSessionId: string;
   amount: number | null;
   status: string | null;
+  courseId: number; // Define courseId here
+
 }

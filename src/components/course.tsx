@@ -11,7 +11,9 @@ To read more about using these font, please visit the Next.js documentation:
 - App Directory: https://nextjs.org/docs/app/building-your-application/optimizing/fonts
 - Pages Directory: https://nextjs.org/docs/pages/building-your-application/optimizing/fonts
 **/
+
 import { Button } from "@/components/ui/button";
+
 import Link from "next/link";
 import {
   CarouselItem,
@@ -71,7 +73,7 @@ export function Course() {
   const userPassed = async () => {
     console.log(user);
     const isUserPassed = await checkUserPassed(user.$id);
-    setPassedModules(isUserPassed?.passedAllModules);
+    setPassedModules(isUserPassed?.passedAllModules ?? null);
     console.log("The User complted --- ", isUserPassed);
 
   }

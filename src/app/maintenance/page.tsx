@@ -33,7 +33,11 @@ const Maintenance = () => {
   );
 
 
-  function ChevronDownIcon(props) {
+  interface ChevronDownIconProps extends React.SVGProps<SVGSVGElement> {
+    // Define any specific props your component expects, if any
+  }
+  
+  function ChevronDownIcon(props: ChevronDownIconProps) {
     return (
       <svg
         {...props}
@@ -49,7 +53,7 @@ const Maintenance = () => {
       >
         <path d="m6 9 6 6 6-6" />
       </svg>
-    )
+    );
   }
   
   };
