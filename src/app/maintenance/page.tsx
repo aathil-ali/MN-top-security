@@ -4,7 +4,7 @@ const Maintenance = () => {
     return (
     <div className="flex min-h-[100dvh] flex-col items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-md text-center">
-        <img src="/placeholder.svg" width={100} height={100} alt="MN Top Security" className="mx-auto mb-6" />
+        <img src="/images/mn-top-security-logo-new-black.png" width={100} height={100} alt="MN Top Security" className="mx-auto mb-6" />
         <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">Site Undergoing Maintenance</h1>
         <p className="mt-4 text-muted-foreground">
           We apologize for the inconvenience. Our website is currently undergoing scheduled maintenance to improve your
