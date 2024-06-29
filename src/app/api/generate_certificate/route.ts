@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import fs from "fs";
 import path from "path";
 
-export async function POST(req, res) {
+export async function POST(req: NextRequest) {
     try {
         const { name, date } = await req.json();
 
