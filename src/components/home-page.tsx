@@ -46,7 +46,7 @@ export function HomePage() {
                 alt="Online courses"
                 className="rounded-lg object-cover"
                 height={400}
-                src="images/training-security-guard.jpg"
+                src="images/security-primary.jpg"
                 style={{ aspectRatio: "600/400", objectFit: "cover" }}
                 width={600}
               />
@@ -201,6 +201,17 @@ const courseData = [
     price: "$199",
     rating: 4,
     image: "images/secuirty-course.jpg"
+  },
+  {
+    id: 2,
+    title: "First Aid/CPR",
+    description: "At MN Top Security, our Emergency First Aid / CPR-C course offers a combination of online and in-person learning. The in-person section takes place in either Toronto or Mississauga, providing learners with practical, hands-on experience.",
+    duration: "1 week",
+    price: "$75", // Use numerical price for Stripe
+    rating: 5,
+    image: "/images/cpr.jpg",
+    priceId: process.env.NEXT_PUBLIC_STRIPE_FIRST_AID_PRODUCT_PRICE_ID,
+
   },
 
   // Add more courses as needed

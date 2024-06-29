@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { QuizResult } from './quiz-result';
 import { account, fetchQuizAnswers, getQuiz, saveQuizResult } from '@/lib/server/appwrite';
 import { Skeleton } from "@/components/ui/skeleton"
+import { Loader2 } from 'lucide-react';
 
 
 interface QuizData {
@@ -30,6 +31,7 @@ export function Quiz( { id } : QuizProps) {
   const [quizData, setQuizData] = useState<QuizData[]>([]);
   const [user, setUser] = useState(null);
   const [savedResult,setSavedResult] = useState(null);
+  const [sBLoader, setSBLoader] = useState(null);
 
 
   useEffect(() => {
@@ -105,6 +107,8 @@ export function Quiz( { id } : QuizProps) {
 
   const  handleFinalSubmit = async () => {
 
+    setSBLoader(true);
+
     setAnswers(prevAnswers => [
       ...prevAnswers,
       { question: quizData[currentIndex].question, selectedOption, correctAnswer: quizData[currentIndex].correctAnswer }
@@ -113,6 +117,14 @@ export function Quiz( { id } : QuizProps) {
     await saveQuizResult(user.$id, id, answers);
 
     setShowResults(true);
+    setSBLoader(false);
+  };
+
+  const handleRetryQuiz = () => {
+    setCurrentIndex(0);
+    setSelectedOption('');
+    setAnswers([]);
+    setShowResults(false);
   };
 
   return (
@@ -184,16 +196,21 @@ export function Quiz( { id } : QuizProps) {
               <Button
                 onClick={handleFinalSubmit}
                 className="bg-gray-900 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded"
-                disabled={!selectedOption}
+                disabled={!selectedOption || sBLoader }
               >
-                <ArrowRightIcon className="mr-2 h-5 w-5" />
+                {sBLoader ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <ArrowRightIcon className="mr-2 h-5 w-5" />
+
+                )}
                 Submit
               </Button>
             )}
           </div>
         </>
       ) : (
-        <QuizResult answers={answers} />
+        <QuizResult answers={answers} onRetryQuiz={handleRetryQuiz} />
       )
     )}
   </div>

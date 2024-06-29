@@ -27,9 +27,17 @@ import {
   AccordionItem,
   Accordion,
 } from "@/components/ui/accordion";
-import { modulesCollection } from "@/lib/server/appwrite"; // Import your Appwrite instance
-import { RefreshCwIcon } from "lucide-react";
+import { checkUserPassed, modulesCollection } from "@/lib/server/appwrite"; // Import your Appwrite instance
+import { RefreshCwIcon, MoveLeft } from "lucide-react";
 import { Loader2 } from "lucide-react"
+import { useAuth } from "@/contexts/AuthContext";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { useRouter } from 'next/navigation'; // Ensure this is the correct import
 
 export function Course() {
 
@@ -38,11 +46,15 @@ export function Course() {
     name: string;
     pages: number;
     index: number;
+    duration: string
     // Add more fields as needed
   }
   const [modules, setModules] = useState<Module[]>([]);
   const [selectedModule, setSelectedModule] = useState(null);
   const [dBLoader, setDBLoader] = useState(null);
+  const [passedModules, setPassedModules] = useState(null);
+  const { user, loading } = useAuth();
+
 
   const [selectedLink, setSelectedLink] = useState("Content"); // Default to showing content
 
@@ -50,6 +62,19 @@ export function Course() {
     fetchModules();
   }, []);
 
+  useEffect(() => {
+    if (!loading && user) {
+      userPassed();
+    }
+  }, [loading, user]);
+
+  const userPassed = async () => {
+    console.log(user);
+    const isUserPassed = await checkUserPassed(user.$id);
+    setPassedModules(isUserPassed?.passedAllModules);
+    console.log("The User complted --- ", isUserPassed);
+
+  }
   const handleModuleClick = (moduleId) => {
     const selected = modules.find((module) => module.$id === moduleId);
     setSelectedModule(selected);
@@ -60,16 +85,19 @@ export function Course() {
     setSelectedLink(linkType);
   };
 
+
+
   const fetchModules = async () => {
     try {
       const response = await modulesCollection;
 
       console.log("Response", response);
-      
+
       const fetchedModules = response.documents.map((document, index) => ({
         $id: document.$id,
         name: document.name,
         pages: document.pages,
+        duration: document.Duration,
         index: index + 1, // Add an index to determine the module number
         // Add more fields as needed
       }));
@@ -83,12 +111,12 @@ export function Course() {
   };
   const handleDownloadCertificate = async (e) => {
     e.preventDefault();
-  
+
     const name = "Aathil Thadathil";
     const date = new Date().toISOString().split('T')[0]; // Format the date as YYYY-MM-DD
 
     setDBLoader(true);
-  
+
     try {
       const response = await fetch('/api/generate_certificate', {
         method: 'POST',
@@ -97,13 +125,13 @@ export function Course() {
         },
         body: JSON.stringify({ name, date }),
       });
-  
+
       if (response.ok) {
-    setDBLoader(false);
+        setDBLoader(false);
 
         const data = await response.json();
         const fileUrl = data.fileUrl;
-  
+
         if (fileUrl) {
           const url = `${process.env.NEXT_PUBLIC_BASE_URL}${fileUrl}`;
           const a = document.createElement('a');
@@ -122,6 +150,11 @@ export function Course() {
       console.error('Error:', error);
     }
   };
+  const router = useRouter();
+
+  const handleDashboardRedirect = () => {
+    router.push('/dashboard/user');
+  };
 
   return (
     <div className="grid min-h-screen w-full grid-cols-[300px_1fr] bg-gray-100 dark:bg-gray-800">
@@ -136,7 +169,7 @@ export function Course() {
                 <AccordionItem key={module.$id} value={module.$id}>
                   <AccordionTrigger onClick={() => handleModuleClick(module.$id)}>
                     {" "}
-                    <h3 className="text-base font-semibold">{module.name}</h3>
+                    <h3 className="text-base font-semibold">{module.name} - ({module.duration}:00 Hrs) </h3>
                   </AccordionTrigger>
                   <AccordionContent>
                     <div className="mt-2 space-y-2">
@@ -180,18 +213,46 @@ export function Course() {
           </div>
         </div>
       </div>
-     
-      
+
+
       <div className="p-6 flex flex-col items-center w-full module">
         <div className="flex justify-between w-full mb-6">
-          <Button variant="outline" className="flex items-center" onClick={handleDownloadCertificate}>
-           { dBLoader ?  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> :  <DownloadIcon className="w-4 h-4 mr-2" />  }
-            Download Certificate
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span>
+                  <Button
+                    variant="outline"
+                    className="flex items-center"
+                    onClick={handleDownloadCertificate}
+                    disabled={!passedModules}
+                  >
+                    {dBLoader ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <DownloadIcon className="w-4 h-4 mr-2" />
+                    )}
+                    Download Certificate
+                  </Button>
+
+
+
+                </span>
+
+              </TooltipTrigger>
+              {!passedModules && (
+                <TooltipContent>
+                  <p>You must pass all modules to download the certificate.</p>
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+          <Button variant="outline" className="flex items-center" onClick={handleDashboardRedirect}
+          >
+            <MoveLeft className="w-4 h-4 mr-2" />
+            Dashboard
           </Button>
-          <Button variant="outline" className="flex items-center">
-            <RefreshCwIcon className="w-4 h-4 mr-2" />
-            Retry Quiz
-          </Button>
+
         </div>
 
         {selectedModule ? (

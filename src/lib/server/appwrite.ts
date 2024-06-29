@@ -41,7 +41,6 @@ const db = new Databases(client);
 const modulesCollection = db.listDocuments(appWriteConfig.databaseId,appWriteConfig.modulesCollectionId)
 
 
-// const user = await account.get()
 
 export { modulesCollection };
 export function getQuiz(moduleId: number): Promise<any> {
@@ -138,24 +137,33 @@ export const fetchQuizResult = async (userId: string, moduleId: number) => {
 
 export const saveQuizResult = async (userId: string, moduleId: number, answers: Answer[]) => {
   try {
+
     const result = await fetchQuizResult(userId, moduleId);
 
     const correctCount = answers.filter(answer => answer.selectedOption === answer.correctAnswer).length;
+    
+    console.log("Correct Count", correctCount);
+
 
     let quizResultId;
 
-    
     if (result) {
-      quizResultId = result.documents[0].$id;
+      quizResultId = result.$id;
+      console.log(">>>>>>>>>>>>UPDATING");
 
-      await databases.updateDocument(
+    const updateResuly =   await databases.updateDocument(
         appWriteConfig.databaseId,
         appWriteConfig.quizResultsCollectionId,
         quizResultId,
         { correctCount,
           totalQuestions: answers.length }
       );
+
+      console.log(updateResuly)
     } else {
+
+      console.log(">>>>>>>>>>>>NOT UPDATING");
+
       const quizResultResponse = await databases.createDocument(
         appWriteConfig.databaseId,
         appWriteConfig.quizResultsCollectionId,
@@ -240,44 +248,43 @@ export const fetchQuizAnswers = async (userId: string, moduleId: number) =>  {
 }
 
 
-// export const checkUserPassed = async () => {
-//   try {
+export const checkUserPassed = async (userId:string) => {
+  try {
 
-//     const userId = user.$id;
-//     const response = await databases.listDocuments(
-//       appWriteConfig.databaseId,
-//       appWriteConfig.quizResultsCollectionId,
-//       [
-//         Query.equal('userId', userId),
-//       ]
-//     );
+    const response = await databases.listDocuments(
+      appWriteConfig.databaseId,
+      appWriteConfig.quizResultsCollectionId,
+      [
+        Query.equal('userId', userId),
+      ]
+    );
 
-//     const completedModules = new Set();
-//     let passedAllModules = true;
+    const completedModules = new Set();
+    let passedAllModules = true;
 
-//     // Check pass/fail status for each module
-//     response.documents.forEach(module => {
-//       const { moduleId, totalQuestions, correctCount } = module;
-//       completedModules.add(moduleId);
+    // Check pass/fail status for each module
+    response.documents.forEach(module => {
+      const { moduleId, totalQuestions, correctCount } = module;
+      completedModules.add(moduleId);
 
-//       const percentageCorrect = (correctCount / totalQuestions) * 100;
-//       if (percentageCorrect < 50) {
-//         passedAllModules = false;
-//       }
-//     });
+      const percentageCorrect = (correctCount / totalQuestions) * 100;
+      if (percentageCorrect < 50) {
+        passedAllModules = false;
+      }
+    });
 
-//     // Check if all modules from 1 to 11 are completed
-//     for (let i = 1; i <= 11; i++) {
-//       if (!completedModules.has(i)) {
-//         passedAllModules = false;
-//         break;
-//       }
-//     }
+    // Check if all modules from 1 to 11 are completed
+    for (let i = 1; i <= 11; i++) {
+      if (!completedModules.has(i)) {
+        passedAllModules = false;
+        break;
+      }
+    }
 
-//   return { passedAllModules }
+  return { passedAllModules }
 
-//   } catch (error) {
-//     console.error('Error fetching quiz result:', error);
-//   }
-// }
+  } catch (error) {
+    console.error('Error fetching quiz result:', error);
+  }
+}
 

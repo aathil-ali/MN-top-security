@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Button } from "@/components/ui/button";
+import { RefreshCwIcon } from 'lucide-react';
 
 interface Answer {
   question: string;
@@ -8,15 +10,22 @@ interface Answer {
 
 interface QuizResultProps {
   answers: Answer[];
+  onRetryQuiz: () => void;
 }
 
-export function QuizResult({ answers }: QuizResultProps) {
+export function QuizResult({ answers,onRetryQuiz }: QuizResultProps) {
   const correctCount = answers.filter(answer => answer.selectedOption === answer.correctAnswer).length;
 
   return (
     <div className="quiz-results">
       <div className="flex items-center justify-between mb-20 reveal">
         <h2 className="text-2xl font-bold">Quiz Results</h2>
+        <div className="flex items-center gap-2">
+        <Button variant="outline" className="flex items-center"  onClick={onRetryQuiz}>
+            <RefreshCwIcon className="w-4 h-4 mr-2" />
+            Retry Quiz
+          </Button>
+        </div>
         <div className="flex items-center gap-2">
           <div className="bg-green-500 text-white font-medium px-3 py-1 rounded-full">{correctCount}/{answers.length}</div>
           <span className="text-gray-500 dark:text-gray-400">Correct</span>

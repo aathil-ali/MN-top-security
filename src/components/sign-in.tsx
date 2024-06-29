@@ -15,9 +15,12 @@ import { account } from "@/lib/server/appwrite"
 import { ToastAction } from "@/components/ui/toast"
 import { useToast } from "@/components/ui/use-toast"
 import { useRouter } from "next/navigation"; // Change this line
+import { useAuth } from "@/contexts/AuthContext";
+
 
 export function SignIn() {
   const router = useRouter();
+  const { signIn } = useAuth();
 
   const [email, setemail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -45,7 +48,7 @@ export function SignIn() {
     event.preventDefault();
     try {
 
-      const response = await account.createEmailPasswordSession(email, password);
+      await signIn(email, password);
       toast({
         description: "Login Successful.",
       })
@@ -80,9 +83,9 @@ export function SignIn() {
           />
           <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">Sign in to your account</h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Or
-            <Link className="font-medium text-indigo-600 hover:text-indigo-500" href="/signup">
-              sign up for a new account
+            Or   <span>  </span>
+            <Link className="font-medium text-indigo-600 hover:text-indigo-500" href="/auth/signup">
+                  sign up for a new account
             </Link>
           </p>
         </div>
