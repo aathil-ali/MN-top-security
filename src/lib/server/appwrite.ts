@@ -1,6 +1,6 @@
 
 import { PaymentData } from "@/interfaces/PaymentData";
-import { Client,Databases,Account,Storage,Avatars, Query } from "appwrite";
+import { Client, Databases, Account, Storage, Avatars, Query } from "appwrite";
 import { useRouter } from "next/navigation"; // Change this line
 
 interface Answer {
@@ -15,9 +15,9 @@ export const appWriteConfig = {
   userCollectionId: process.env.NEXT_PUBLIC_APPWRITE_DATABASE_MODULE_ID,
   modulesCollectionId: process.env.NEXT_PUBLIC_APPWRITE_DATABASE_MODULE_ID,
   quizCollectionId: process.env.NEXT_PUBLIC_APPWRITE_DATABASE_QUIZ_ID,
-  paymentsCollectionId:process.env.NEXT_PUBLIC_APPWRITE_DATABASE_PAYMENTS_ID,
-  quizResultsCollectionId:process.env.NEXT_PUBLIC_APPWRITE_DATABASE_QUIZ_RESULTS_ID,
-  userAnswersCollectionId:process.env.NEXT_PUBLIC_APPWRITE_DATABASE_USER_ANSWER_ID
+  paymentsCollectionId: process.env.NEXT_PUBLIC_APPWRITE_DATABASE_PAYMENTS_ID,
+  quizResultsCollectionId: process.env.NEXT_PUBLIC_APPWRITE_DATABASE_QUIZ_RESULTS_ID,
+  userAnswersCollectionId: process.env.NEXT_PUBLIC_APPWRITE_DATABASE_USER_ANSWER_ID
 };
 export const client = new Client();
 
@@ -38,7 +38,7 @@ export { ID } from 'appwrite';
 const db = new Databases(client);
 
 // Define collection for modules
-const modulesCollection = db.listDocuments(appWriteConfig.databaseId,appWriteConfig.modulesCollectionId)
+const modulesCollection = db.listDocuments(appWriteConfig.databaseId, appWriteConfig.modulesCollectionId)
 
 
 
@@ -50,8 +50,8 @@ export function getQuiz(moduleId: number): Promise<any> {
         appWriteConfig.databaseId,
         appWriteConfig.quizCollectionId,
         [
-          Query.equal('module_id',moduleId ),
-      ]
+          Query.equal('module_id', moduleId),
+        ]
       );
 
       console.log("QUIZ", quiz);
@@ -73,7 +73,7 @@ export function savePayment(paymentData: PaymentData): Promise<void> {
 
   return new Promise((resolve, reject) => {
 
-    let amount  = paymentData.amount ? paymentData.amount/100 : 0;
+    let amount = paymentData.amount ? paymentData.amount / 100 : 0;
     databases.createDocument(
       appWriteConfig.databaseId,
       appWriteConfig.paymentsCollectionId,
@@ -141,7 +141,7 @@ export const saveQuizResult = async (userId: string, moduleId: number, answers: 
     const result = await fetchQuizResult(userId, moduleId);
 
     const correctCount = answers.filter(answer => answer.selectedOption === answer.correctAnswer).length;
-    
+
     console.log("Correct Count", correctCount);
 
 
@@ -151,12 +151,14 @@ export const saveQuizResult = async (userId: string, moduleId: number, answers: 
       quizResultId = result.$id;
       console.log(">>>>>>>>>>>>UPDATING");
 
-    const updateResuly =   await databases.updateDocument(
+      const updateResuly = await databases.updateDocument(
         appWriteConfig.databaseId,
         appWriteConfig.quizResultsCollectionId,
         quizResultId,
-        { correctCount,
-          totalQuestions: answers.length }
+        {
+          correctCount,
+          totalQuestions: answers.length
+        }
       );
 
       console.log(updateResuly)
@@ -168,9 +170,11 @@ export const saveQuizResult = async (userId: string, moduleId: number, answers: 
         appWriteConfig.databaseId,
         appWriteConfig.quizResultsCollectionId,
         'unique()',
-        { userId, moduleId,
+        {
+          userId, moduleId,
           correctCount,
-          totalQuestions: answers.length }
+          totalQuestions: answers.length
+        }
       );
       quizResultId = quizResultResponse.$id;
     }
@@ -188,7 +192,7 @@ export const saveQuizResult = async (userId: string, moduleId: number, answers: 
         // Update existing answer
         await databases.updateDocument(
           appWriteConfig.databaseId,
-        appWriteConfig.userAnswersCollectionId,
+          appWriteConfig.userAnswersCollectionId,
           existingAnswers.documents[0].$id,
           {
             selectedOption: answer.selectedOption,
@@ -214,12 +218,12 @@ export const saveQuizResult = async (userId: string, moduleId: number, answers: 
     console.error('Error saving quiz result:', error);
   }
 };
-export const fetchQuizAnswers = async (userId: string, moduleId: number) =>  {
-  
+export const fetchQuizAnswers = async (userId: string, moduleId: number) => {
+
 
   console.log("FETCHQUIZANSWES--------");
   const existingQuizResults = await fetchQuizResult(userId, moduleId);
-  let fetchedAnswers ;
+  let fetchedAnswers;
 
   if (existingQuizResults) {
     console.log("Existing users", existingQuizResults);
@@ -248,7 +252,7 @@ export const fetchQuizAnswers = async (userId: string, moduleId: number) =>  {
 }
 
 
-export const checkUserPassed = async (userId:string) => {
+export const checkUserPassed = async (userId: string) => {
   try {
 
     const response = await databases.listDocuments(
@@ -281,10 +285,31 @@ export const checkUserPassed = async (userId:string) => {
       }
     }
 
-  return { passedAllModules }
+    return { passedAllModules }
 
   } catch (error) {
     console.error('Error fetching quiz result:', error);
   }
 }
+
+export const getQuizAttempts = async () => {
+  try {
+    const response = await databases.listDocuments(appWriteConfig.databaseId, appWriteConfig.quizResultsCollectionId,
+    );
+return response.documents;
+  } catch (error) {
+  console.error('Error fetching quiz attempts:', error);
+  throw error;
+}
+};
+
+export const getModules = async () => {
+  try {
+    const response = await databases.listDocuments(appWriteConfig.databaseId, appWriteConfig.modulesCollectionId);
+    return response.documents;
+  } catch (error) {
+    console.error('Error fetching modules:', error);
+    throw error;
+  }
+};
 

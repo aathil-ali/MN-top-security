@@ -33,6 +33,7 @@ import { useEffect, useState } from "react"
 import { useRouter } from 'next/navigation';
 import Profile  from "./user/Profile"
 import Courses from "./user/Courses"
+import { QuizAttempts } from "./quiz-attempts"
 
 export function UserDashboard() {
 
@@ -99,6 +100,12 @@ export function UserDashboard() {
             <UserIcon className="h-6 w-6" />
             <span>Profile</span>
           </Link>
+
+          <Link className="flex items-center space-x-3 hover:bg-gray-700 rounded-md p-2" href="#" onClick={() => handleNavigation('quiz-attempts')}>
+            <BadgeAlertIcon className="h-6 w-6" /> {/* Replace with a more appropriate icon */}
+            <span>My Quiz Attempts</span>
+          </Link>
+      
       
         </nav>
         <div className="mt-auto">
@@ -138,19 +145,23 @@ export function UserDashboard() {
                 <DropdownMenuItem>Logout</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button variant="outline">Upgrade</Button>
+            <Button onClick={handleLogout} variant="outline">Logout</Button>
           </div>
         </header>
         <main>
          
         {selectedSection === 'courses' && <Courses />}
-        {selectedSection === 'profile' && <Profile user={user} />}
+        {selectedSection === 'profile' && <Profile />}
+        {selectedSection === 'quiz-attempts' && <QuizAttempts />}
        
         </main>
       </div>
     </div>
   )
 }
+
+
+
 
 function BadgeAlertIcon(props) {
   return (
@@ -172,7 +183,6 @@ function BadgeAlertIcon(props) {
     </svg>
   )
 }
-
 
 function BookIcon(props) {
   return (

@@ -1,22 +1,14 @@
-import { SignIn } from "@/components/sign-in"
-import { SignUp } from "@/components/sign-up";
-import VerifyEmail from "@/components/verify-email";
-import dynamic from "next/dynamic";
+"use client";
+import dynamic from 'next/dynamic';
 
-
-const DynamicCourse = dynamic(() => import('@/components/verify-email'), {
+const DynamicVerifyEmail = dynamic(() => import('@/components/verify-email').then(mod => mod.VerifyEmail), {
     ssr: false, // Disable server-side rendering for this component
 });
 
-export default function HomePage() {
+export default function VerifyEmailPage() {
     return (
-
-        <main >
-
-            <DynamicCourse />
-
-
-
+        <main>
+            <DynamicVerifyEmail />
         </main>
     );
 }

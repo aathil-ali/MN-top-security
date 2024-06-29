@@ -3,7 +3,7 @@ import { DropdownMenuTrigger, DropdownMenuItem, DropdownMenuContent, DropdownMen
 import { Button } from "@/components/ui/button";
 import { CardContent, Card } from "@/components/ui/card";
 import { StarIcon } from "@heroicons/react/solid"; // Assuming you're using Heroicons
-import { ChevronDownIcon, MenuIcon } from "lucide-react";
+import { ChevronDownIcon, ClockIcon, MenuIcon, ShieldCheckIcon, UsersIcon } from "lucide-react";
 
 export function HomePage() {
   return (
@@ -77,7 +77,10 @@ export function HomePage() {
             <Link className="hover:text-gray-300" href="#about">
               About
             </Link>
-         
+            <Link className="hover:text-gray-300" href="/auth/signIn">
+              Sign In
+            </Link>
+
           </div>
           <div className="md:hidden">
             <Button size="icon" variant="ghost">
@@ -88,7 +91,7 @@ export function HomePage() {
         </div>
       </nav>
       <main>
-        <section className="bg-gray-100 py-12 md:py-20" id ="our-courses">
+        <section className="bg-gray-100 py-12 md:py-20" id="our-courses">
           <div className="container mx-auto px-4 md:px-6">
             <h2 className="mb-8 text-3xl font-bold tracking-tight md:text-4xl">Our Courses</h2>
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -129,6 +132,61 @@ export function HomePage() {
             <p className="mt-4 text-gray-500">
               Our mission is to deliver high-quality, accessible training that prepares our students for real-world challenges. With a focus on practical skills and industry best practices, we ensure that our graduates are ready to handle any situation with confidence and professionalism.
             </p>
+          </div>
+        </section>
+        <section className="bg-white py-12 md:py-20" id="additional-features">
+          <div className="container mx-auto px-4 md:px-6">
+            <h2 className="mb-8 text-3xl font-bold tracking-tight md:text-4xl">Additional Features</h2>
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+              <FeatureCard
+                icon={<ShieldCheckIcon className="h-8 w-8 text-indigo-600" />}
+                title="Industry-Recognized Certification"
+                description="Receive a certification that is widely recognized and respected in the security industry."
+              />
+              <FeatureCard
+                icon={<UsersIcon className="h-8 w-8 text-indigo-600" />}
+                title="Expert Instructors"
+                description="Learn from experienced professionals who bring real-world knowledge and expertise."
+              />
+              <FeatureCard
+                icon={<ClockIcon className="h-8 w-8 text-indigo-600" />}
+                title="Flexible Learning Schedule"
+                description="Study at your own pace with our flexible online platform that fits your busy lifestyle."
+              />
+            </div>
+          </div>
+        </section>
+
+
+
+        <section className="bg-gray-200 py-12 md:py-20" id="contact">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div>
+                <h2 className="mb-8 text-3xl font-bold tracking-tight md:text-4xl">Contact Us</h2>
+                <p className="text-gray-500 mb-4">
+                  Have questions or need assistance? Contact our support team for help.
+                </p>
+                <p className="text-gray-500 mb-4">
+                  Email: <a href="mailto:info@mntopsecurity.com" className="text-indigo-600 hover:underline">info@mntopsecurity.com</a>
+                </p>
+                <p className="text-gray-500 mb-4">
+                  Phone: 416-4505837
+
+                </p>
+              </div>
+              <div>
+                {/* Optionally, add a contact form here */}
+                <form className="grid grid-cols-1 gap-4">
+                  <input type="text" placeholder="Your Name" className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                  <input type="email" placeholder="Your Email" className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                  <textarea placeholder="Your Message" rows={4} className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                  <button type="submit" className="bg-indigo-600 text-white px-6 py-3 rounded-md hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                    Send Message
+                  </button>
+                </form>
+              </div>
+            </div>
           </div>
         </section>
       </main>
@@ -182,7 +240,8 @@ export function HomePage() {
               <h3 className="text-lg font-bold">Contact Us</h3>
               <p className="text-gray-300">123 Security Lane, Safety City, SC 45678</p>
               <p className="text-gray-300">Email: info@mntopsecurity.com</p>
-              <p className="text-gray-300">Phone: (123) 456-7890</p>
+              <p className="text-gray-300">Phone: 416-4505837
+              </p>
             </div>
           </div>
         </div>
@@ -217,7 +276,37 @@ const courseData = [
   // Add more courses as needed
 ];
 
-function CourseCard({ course}) {
+function FeatureCard({ icon, title, description }) {
+  return (
+    <div className="p-6 bg-gray-100 rounded-lg shadow-lg">
+      <div className="flex items-center mb-4">
+        <div className="flex-shrink-0">
+          {icon}
+        </div>
+        <div className="ml-4">
+          <h3 className="text-lg font-semibold">{title}</h3>
+        </div>
+      </div>
+      <p className="text-gray-500">{description}</p>
+    </div>
+  );
+}
+
+function EventCard({ date, title, description, location, buttonText, buttonLink }) {
+  return (
+    <div className="p-6 bg-white rounded-lg shadow-lg">
+      <p className="text-gray-500 mb-2">{date}</p>
+      <h3 className="text-lg font-semibold mb-2">{title}</h3>
+      <p className="text-gray-500 mb-4">{description}</p>
+      <p className="text-gray-500 mb-2">{location}</p>
+      <Link href={buttonLink} className="inline-block bg-indigo-600 text-white px-4 py-2 rounded-md font-medium shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+        {buttonText}
+      </Link>
+    </div>
+  );
+}
+
+function CourseCard({ course }) {
   return (
     <Card className="overflow-hidden rounded-lg shadow-lg">
       <img alt={course.title} className="w-full h-48 object-cover" src={course.image} />
